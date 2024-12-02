@@ -1,0 +1,55 @@
+# halcmd loadusr arduino-ttyUSB0
+# loadrt threads name1=test-thread period1=1000
+loadrt and2 count=1
+addf and2.0 servo-thread
+
+# --- ESTOP-EXT ---
+net estop_jog <= arduino_ttyUSB0.din.9
+
+# ESTOP button trigger GUI control
+net estop_prog <= iocontrol.0.user-enable-out
+net estop_prog => and2.0.in0
+net estop_jog => and2.0.in1
+net and2out <= and2.0.out => iocontrol.0.emc-enable-in
+
+
+# goto parameters find the invert pin then set the value = 1
+# 
+# 9 is input for estop
+# arduino_ttyUSB0.din.9
+setp arduino_ttyUSB0.din.9-invert 1
+
+
+# LPT 
+# iocontrol.0.user-enable-out
+# iocontrol.0.emc-enable-in
+
+
+
+-----------------------------------
+
+
+-----------------------------------
+# FIND THE DATAS
+# /home/sab/Desktop/TRY_BUILD/linuxcnc-dev/scripts/linuxcnc /home/sab/Desktop/TRY_BUILD/linuxcnc-dev/configs/sim/axis/vismach/3axis-tutorial/3axis-tutorial.ini
+#  Then delete that signal
+#  delsig estop-loop
+#
+loadusr arduino-ttyUSB0
+loadrt and2 count=1
+# loadrt threads name1=test-thread period1=1000 
+addf and2.0 servo-thread
+
+
+net and2out and2.0.out => iocontrol.0.emc-enable-in
+net estop_jog arduino_ttyUSB0.din.9 => and2.0.in1
+net estop_prog iocontrol.0.user-enable-out => and2.0.in0
+
+setp arduino_ttyUSB0.din.9-invert                 TRUE
+
+
+
+
+
+
+

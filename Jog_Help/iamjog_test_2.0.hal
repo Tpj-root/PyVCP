@@ -1,0 +1,195 @@
+# components
+loadrt tpmod 
+loadrt homemod 
+loadrt scarakins coordinates=xyzcab 
+loadrt motmod base_period_nsec=0 servo_period_nsec=1000000 num_joints=6 
+#loadrt __servo-thread  (not loaded by loadrt, no args saved)
+loadrt pid names=J0_pid,J1_pid,J2_pid,J3_pid,J4_pid,J5_pid 
+loadrt mux2 names=J0_mux,J1_mux,J2_mux,J3_mux,J4_mux,J5_mux 
+loadrt ddt names=J0_vel,J0_accel,J1_vel,J1_accel,J2_vel,J2_accel,J3_vel,J3_accel,J4_vel,J4_accel,J5_vel,J5_accel 
+loadrt sim_home_switch names=J0_switch,J1_switch,J2_switch,J3_switch,J4_switch,J5_switch 
+loadrt sim_spindle names=sim_spindle 
+loadrt limit2 names=limit_speed 
+loadrt lowpass names=spindle_mass 
+loadrt near names=near_speed 
+loadrt scale names=rpm_rps 
+loadrt encoder num_chan=1 
+loadrt mux4 count=1 
+# pin aliases
+# param aliases
+# signals
+# nets
+net :j0 joint.0.pos-fb => pyvcp.joint0 scaragui.joint0
+net :j1 joint.1.pos-fb => pyvcp.joint1 scaragui.joint1
+net :j2 joint.2.pos-fb => pyvcp.joint2 scaragui.joint2
+net :j3 joint.3.pos-fb => pyvcp.joint3 scaragui.joint3
+net :j4 joint.4.pos-fb => pyvcp.joint4 scaragui.joint4
+net :j5 joint.5.pos-fb => pyvcp.joint5 scaragui.joint5
+net :kinstype-select motion.analog-out-03 => motion.switchkins-type
+net :kinstype.is-0 kinstype.is-0 => pyvcp.multilabel.0.legend0
+net :kinstype.is-1 kinstype.is-1 => pyvcp.multilabel.0.legend1
+net :kinstype.is-2 kinstype.is-2 => pyvcp.multilabel.0.legend2
+net :type0-button pyvcp.type0-button => halui.mdi-command-00
+net :type1-button pyvcp.type1-button => halui.mdi-command-01
+net :type2-button pyvcp.type2-button => halui.mdi-command-02
+net :vismach-clear pyvcp.vismach-clear => vismach.plotclear
+net J0:acc J0_accel.out
+net J0:enable joint.0.amp-enable-out => J0_pid.enable
+net J0:homesw J0_switch.home-sw => joint.0.home-sw-in
+net J0:on-pos J0_pid.output => J0_mux.in1
+net J0:pos-cmd joint.0.motor-pos-cmd => J0_pid.command
+net J0:pos-fb J0_mux.out => J0_mux.in0 J0_switch.cur-pos J0_vel.in joint.0.motor-pos-fb
+net J0:vel J0_vel.out => J0_accel.in
+net J1:acc J1_accel.out
+net J1:enable joint.1.amp-enable-out => J1_pid.enable
+net J1:homesw J1_switch.home-sw => joint.1.home-sw-in
+net J1:on-pos J1_pid.output => J1_mux.in1
+net J1:pos-cmd joint.1.motor-pos-cmd => J1_pid.command
+net J1:pos-fb J1_mux.out => J1_mux.in0 J1_switch.cur-pos J1_vel.in joint.1.motor-pos-fb
+net J1:vel J1_vel.out => J1_accel.in
+net J2:acc J2_accel.out
+net J2:enable joint.2.amp-enable-out => J2_pid.enable
+net J2:homesw J2_switch.home-sw => joint.2.home-sw-in
+net J2:on-pos J2_pid.output => J2_mux.in1
+net J2:pos-cmd joint.2.motor-pos-cmd => J2_pid.command
+net J2:pos-fb J2_mux.out => J2_mux.in0 J2_switch.cur-pos J2_vel.in joint.2.motor-pos-fb
+net J2:vel J2_vel.out => J2_accel.in
+net J3:acc J3_accel.out
+net J3:enable joint.3.amp-enable-out => J3_pid.enable
+net J3:homesw J3_switch.home-sw => joint.3.home-sw-in
+net J3:on-pos J3_pid.output => J3_mux.in1
+net J3:pos-cmd joint.3.motor-pos-cmd => J3_pid.command
+net J3:pos-fb J3_mux.out => J3_mux.in0 J3_switch.cur-pos J3_vel.in joint.3.motor-pos-fb
+net J3:vel J3_vel.out => J3_accel.in
+net J4:acc J4_accel.out
+net J4:enable joint.4.amp-enable-out => J4_pid.enable
+net J4:homesw J4_switch.home-sw => joint.4.home-sw-in
+net J4:on-pos J4_pid.output => J4_mux.in1
+net J4:pos-cmd joint.4.motor-pos-cmd => J4_pid.command
+net J4:pos-fb J4_mux.out => J4_mux.in0 J4_switch.cur-pos J4_vel.in joint.4.motor-pos-fb
+net J4:vel J4_vel.out => J4_accel.in
+net J5:acc J5_accel.out
+net J5:enable joint.5.amp-enable-out => J5_pid.enable
+net J5:homesw J5_switch.home-sw => joint.5.home-sw-in
+net J5:on-pos J5_pid.output => J5_mux.in1
+net J5:pos-cmd joint.5.motor-pos-cmd => J5_pid.command
+net J5:pos-fb J5_mux.out => J5_mux.in0 J5_switch.cur-pos J5_vel.in joint.5.motor-pos-fb
+net J5:vel J5_vel.out => J5_accel.in
+net encoder-counts encoder.0.counts => axis.x.jog-counts axis.y.jog-counts axis.z.jog-counts
+net estop:loop iocontrol.0.user-enable-out => iocontrol.0.emc-enable-in
+net mpg-a arduino_ttyUSB0.din.2 => encoder.0.phase-A
+net mpg-b arduino_ttyUSB0.din.3 => encoder.0.phase-B
+net mpg-scale mux4.0.out => axis.x.jog-scale axis.y.jog-scale axis.z.jog-scale
+net mpg-x arduino_ttyUSB0.din.6 => axis.x.jog-enable
+net mpg-y arduino_ttyUSB0.din.7 => axis.y.jog-enable
+net mpg-z arduino_ttyUSB0.din.8 => axis.z.jog-enable
+net sample:enable motion.motion-enabled => J0_mux.sel J1_mux.sel J2_mux.sel J3_mux.sel J4_mux.sel J5_mux.sel
+net scale1 arduino_ttyUSB0.din.4 => mux4.0.sel0
+net scale2 arduino_ttyUSB0.din.5 => mux4.0.sel1
+net spindle-at-speed near_speed.out => spindle.0.at-speed
+net spindle-index-enable sim_spindle.index-enable <=> spindle.0.index-enable
+net spindle-orient spindle.0.orient => spindle.0.is-oriented
+net spindle-pos sim_spindle.position-fb => spindle.0.revs
+net spindle-rpm-filtered spindle_mass.out => near_speed.in2 rpm_rps.in
+net spindle-rps-filtered rpm_rps.out => spindle.0.speed-in
+net spindle-speed-cmd spindle.0.speed-out => limit_speed.in near_speed.in1
+net spindle-speed-limited limit_speed.out => sim_spindle.velocity-cmd spindle_mass.in
+net tool:change iocontrol.0.tool-change => hal_manualtoolchange.change
+net tool:changed hal_manualtoolchange.changed => iocontrol.0.tool-changed
+net tool:prep-loop iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+net tool:prep-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
+# parameter values
+setp J0_accel.tmax               846946
+setp J0_mux.tmax              1554136
+setp J0_pid.do-pid-calcs.tmax              2042922
+setp J0_switch.tmax              4497728
+setp J0_vel.tmax              2787562
+setp J1_accel.tmax               342400
+setp J1_mux.tmax               678418
+setp J1_pid.do-pid-calcs.tmax              1080416
+setp J1_switch.tmax               614166
+setp J1_vel.tmax              1034278
+setp J2_accel.tmax              5357644
+setp J2_mux.tmax              1303970
+setp J2_pid.do-pid-calcs.tmax              1890282
+setp J2_switch.tmax               729768
+setp J2_vel.tmax               602328
+setp J3_accel.tmax               608300
+setp J3_mux.tmax              1305762
+setp J3_pid.do-pid-calcs.tmax              3147568
+setp J3_switch.tmax              1002078
+setp J3_vel.tmax              3075942
+setp J4_accel.tmax               334962
+setp J4_mux.tmax               569242
+setp J4_pid.do-pid-calcs.tmax              1158460
+setp J4_switch.tmax              1775130
+setp J4_vel.tmax              3443460
+setp J5_accel.tmax               807432
+setp J5_mux.tmax               759020
+setp J5_pid.do-pid-calcs.tmax               973952
+setp J5_switch.tmax              1327744
+setp J5_vel.tmax               595878
+setp arduino_ttyUSB0.din.2-invert                FALSE
+setp arduino_ttyUSB0.din.3-invert                FALSE
+setp arduino_ttyUSB0.din.4-invert                FALSE
+setp arduino_ttyUSB0.din.5-invert                FALSE
+setp arduino_ttyUSB0.din.6-invert                FALSE
+setp arduino_ttyUSB0.din.7-invert                FALSE
+setp arduino_ttyUSB0.din.8-invert                FALSE
+setp arduino_ttyUSB0.din.9-invert                FALSE
+setp encoder.capture-position.tmax              3270604
+setp encoder.update-counters.tmax              3668912
+setp limit_speed.tmax             27784130
+setp motion-command-handler.tmax             26983124
+setp motion-controller.tmax             42027318
+setp mux4.0.tmax               885682
+setp near_speed.difference                   10
+setp near_speed.scale                  1.1
+setp near_speed.tmax             16502454
+setp rpm_rps.tmax              5348320
+setp servo-thread.tmax             42076632
+setp sim_spindle.scale           0.01666667
+setp sim_spindle.tmax             15084010
+setp spindle_mass.gain                 0.07
+setp spindle_mass.tmax               786142
+# realtime thread/function links
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+addf J0_pid.do-pid-calcs servo-thread
+addf J1_pid.do-pid-calcs servo-thread
+addf J2_pid.do-pid-calcs servo-thread
+addf J3_pid.do-pid-calcs servo-thread
+addf J4_pid.do-pid-calcs servo-thread
+addf J5_pid.do-pid-calcs servo-thread
+addf J0_mux servo-thread
+addf J1_mux servo-thread
+addf J2_mux servo-thread
+addf J3_mux servo-thread
+addf J4_mux servo-thread
+addf J5_mux servo-thread
+addf J0_vel servo-thread
+addf J0_accel servo-thread
+addf J1_vel servo-thread
+addf J1_accel servo-thread
+addf J2_vel servo-thread
+addf J2_accel servo-thread
+addf J3_vel servo-thread
+addf J3_accel servo-thread
+addf J4_vel servo-thread
+addf J4_accel servo-thread
+addf J5_vel servo-thread
+addf J5_accel servo-thread
+addf J0_switch servo-thread
+addf J1_switch servo-thread
+addf J2_switch servo-thread
+addf J3_switch servo-thread
+addf J4_switch servo-thread
+addf J5_switch servo-thread
+addf limit_speed servo-thread
+addf spindle_mass servo-thread
+addf rpm_rps servo-thread
+addf near_speed servo-thread
+addf sim_spindle servo-thread
+addf encoder.capture-position servo-thread
+addf encoder.update-counters servo-thread
+addf mux4.0 servo-thread

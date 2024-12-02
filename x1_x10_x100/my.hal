@@ -1,0 +1,51 @@
+# how to run this files 
+# 
+# pyvcp_demo Button_Tips.xml my.hal
+loadrt threads name1=servo period1=1000000 
+loadrt toggleXYZ names=IamX1,IamX10,IamX100
+
+
+loadrt mux8 count=1
+
+
+
+addf IamX1 servo
+addf IamX10 servo
+addf IamX100 servo
+addf mux8.0 servo
+
+
+setp mux8.0.in0 0       # Default value for input 0
+setp mux8.0.in1 -0.001  # Value for input 1
+setp mux8.0.in2 -0.01   # Value for input 2
+setp mux8.0.in4 -0.1    # Value for input 4
+setp mux8.0.in3 0
+setp mux8.0.in5 0
+setp mux8.0.in6 0
+setp mux8.0.in7 0
+
+
+
+
+
+net iamx1 IamX1.in pyvcp.Iam_x_in
+net iamx10 IamX10.in pyvcp.Iam_y_in
+net iamx100 IamX100.in pyvcp.Iam_z_in
+
+net iamx1 IamX10.is-on IamX100.is-on
+net iamx10 IamX1.is-on IamX100.is-on-2
+net iamx100 IamX10.is-on-2 IamX1.is-on-2
+
+net iamX1_out mux8.0.sel0 IamX1.on
+net iamX10_out mux8.0.sel1 IamX10.on
+net iamX100_out mux8.0.sel2 IamX100.on
+
+
+net iamfinalout pyvcp.out_put mux8.0.out
+
+
+# 
+# scaling out
+# mux8.0.out
+
+start

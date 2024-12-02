@@ -1,0 +1,15 @@
+
+# Example HAL configuration file using siggen
+
+# Load the siggen component with one channel
+loadrt threads name1=base-1 period1=10000000
+loadrt siggen num_chan=1
+addf siggen.0.update base-1
+
+# Set parameters for the siggen component
+setp siggen.0.frequency 1.0   # Set frequency to 1 Hz
+setp siggen.0.amplitude 1.0   # Set amplitude to 1
+
+# Connect the output of siggen to your floating-point input pin
+net float_input <= siggen.0.cosine
+start

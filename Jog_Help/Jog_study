@@ -1,0 +1,71 @@
+Thinking about it, that is for analogue-input jogging.
+
+For MPG jogging you use the axis.N.jog-enable and axis.N.jog-counts pins.
+
+Assuming that the MPG is connected to motenc.0.encoder.00
+
+net jog-all motenc.0.encoder.00.counts => axis.N.jog-counts
+net x-jog-enable motenc.0.in.00 => axis.N.jog-enable
+net y-jog-enable motenc.0.in.01 => axis.N.jog-enable
+net z-jog-enable motenc.0.in.02 => axis.N.jog-enable
+
+Or similar.
+If you don't have physical axis-select switches then you can use the ones from the gui: halui.joint.0.is-selected for the X axis, for example. 
+
+
+
+
+
+-------------------------------------
+
+
+http://linuxcnc.org/docs/html/examples/mpg.html
+
+-------------------------------------
+
+If you have a mesa card, inputs are in abundance. By specifying binary coded inputs, you only use 3 inputs for axis selection and 2 for scale selection and one of the Mesa MPG inputs for the jog wheel. Plus you can use the other buttons for whatever you like. 
+
+-------------------------------------
+
+
+I purchased ATWGP 01-6BB with no display
+www.alibaba.com/product-detail/Intellige...15.89.1a1333c5PvucJq
+
+The realy box appears to have changed
+Key parameters are:
+5 volt encoder,
+Coded (binary) output for axis selection (decode with Mux8)
+
+Quite expensive but its been very reliable 
+
+----------------------
+
+
+http://www.linuxcnc.org/docs/2.5/html/config/emc2hal.html#_axis_joints
+
+
+
+
+axis.N.jog-counts - (s32, in) Connect to the counts pin of an external encoder to use a physical jog wheel.
+axis.N.jog-enable - (bit, in) When TRUE (and in manual mode), any change in jog-counts will result in motion. When false, jog-counts is ignored.
+axis.N.jog-scale - (float, in) Sets the distance moved for each count on jog-counts, in machine units.
+
+
+
+
+
+
+axis.N.jog-vel-mode - (bit, in) When FALSE (the default), the jogwheel operates in position mode. The axis will move exactly jog-scale units for each count, regardless of how long that might take. When TRUE, the wheel operates in velocity mode - motion stops when the wheel stops, even if that means the commanded motion is not completed.
+
+
+----------------------
+
+
+http://www.linuxcnc.org/docs/2.5/html/drivers/motenc.html
+
+loadrt hal_motenc
+
+
+
+
+

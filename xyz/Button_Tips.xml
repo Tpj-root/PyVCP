@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+  <vbox>
+<button>
+    <halpin>"Iam_x_in"</halpin>
+    <text>"axis.x.jog-enable"</text>
+</button>
+<button>
+    <halpin>"Iam_x_in_ON"</halpin>
+    <text>"axis.x.in_ON"</text>
+</button>
+<button>
+    <halpin>"Iam_y_in"</halpin>
+    <text>"axis.y.jog-enable"</text>
+</button>
+<button>
+    <halpin>"Iam_z_in"</halpin>
+    <text>"axis.z.jog-enable"</text>
+</button>
+
+
+  </vbox>
+</pyvcp>

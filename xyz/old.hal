@@ -1,0 +1,33 @@
+# how to run this files 
+# 
+# pyvcp_demo Button_Tips.xml my.hal
+loadrt threads name1=servo period1=1000000 
+loadrt toggleXYZ names=IamX,IamY,IamZ
+
+
+addf IamX servo
+addf IamY servo
+addf IamZ servo
+
+#net iamtoggle pyvcp.toggle2nist_in toggle2nist.0.in
+#net iamtoggle2 pyvcp.toggle2nist_is-on toggle2nist.0.is-on
+
+net iamxjogmode pyvcp.Iam_x_in
+net iamyjogmode pyvcp.Iam_y_in
+net iamzjogmode pyvcp.Iam_z_in
+
+
+net iamxjogmode IamX.in
+net iamxjogmode IamY.is-on
+
+
+net iamyjogmode IamY.in
+net iamyjogmode IamZ.is-on
+
+
+net iamzjogmode IamZ.in
+net iamzjogmode IamX.is-on
+
+
+
+start

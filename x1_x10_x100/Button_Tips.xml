@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+  <vbox>
+<button>
+    <halpin>"Iam_x_in"</halpin>
+    <text>"X1"</text>
+</button>
+
+<button>
+    <halpin>"Iam_y_in"</halpin>
+    <text>"X10"</text>
+</button>
+<button>
+    <halpin>"Iam_z_in"</halpin>
+    <text>"X100"</text>
+</button>
+<number>
+    <halpin>"out_put"</halpin>
+    <font>("Helvetica",24)</font>
+    <format>"+4.4f"</format>
+</number>
+  </vbox>
+</pyvcp>

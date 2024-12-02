@@ -1,0 +1,91 @@
+#RMC Rev41.1 - Add spindle lock interlock, PDB M-code, angular jog scale, switch SRO/FRO inputs on MPG
+#RMC Rev41 - Added 4th axis back
+#RMC Rev40 - new control panel & 7i73
+
+### MPG ###
+
+# INCREMENT SELECTOR SWITCH
+net jog-incr-a              <=  [HMOT](CARD0).7i73.0.1.input-10-not #0.0001"
+net jog-incr-b              <=  [HMOT](CARD0).7i73.0.1.input-11-not #0.0010"
+net jog-incr-c              <=  [HMOT](CARD0).7i73.0.1.input-12-not #0.0100"
+net jog-incr-d              <=  [HMOT](CARD0).7i73.0.1.input-13-not #0.1000"
+
+# AXIS SELECTOR SWITCH
+net MPG-OFF                 <=  [HMOT](CARD0).7i73.0.1.input-00-not #MPG OFF
+net axis-select-x           <=  [HMOT](CARD0).7i73.0.1.input-01-not
+net axis-select-y           <=  [HMOT](CARD0).7i73.0.1.input-02-not
+net axis-select-z           <=  [HMOT](CARD0).7i73.0.1.input-03-not
+net axis-select-a           <=  [HMOT](CARD0).7i73.0.1.input-04-not
+net FRO-SELECT              <=  [HMOT](CARD0).7i73.0.1.input-05-not
+net SRO-SELECT              <=  [HMOT](CARD0).7i73.0.1.input-06-not
+net JOG-CONT-SELECT         <=  [HMOT](CARD0).7i73.0.1.input-07-not
+
+# MPG HANDWHEEL ENCODER
+net MPG-ENCODER-COUNT       <=  [HMOT](CARD0).7i73.0.1.enc0.count
+
+# AXIS CONNECTIONS
+setp    axis.x.jog-vel-mode 1
+net selected-jog-incr       =>  axis.x.jog-scale    =>  joint.0.jog-scale
+net axis-select-x           =>  axis.x.jog-enable   =>  joint.0.jog-enable
+net MPG-ENCODER-COUNT       =>  axis.x.jog-counts   =>  joint.0.jog-counts
+
+setp    axis.y.jog-vel-mode 1
+net selected-jog-incr       =>  axis.y.jog-scale    =>  joint.1.jog-scale
+net axis-select-y           =>  axis.y.jog-enable   =>  joint.1.jog-enable
+net MPG-ENCODER-COUNT       =>  axis.y.jog-counts   =>  joint.1.jog-counts
+
+setp    axis.z.jog-vel-mode 1
+net selected-jog-incr       =>  axis.z.jog-scale    =>  joint.2.jog-scale
+net axis-select-z           =>  axis.z.jog-enable   =>  joint.2.jog-enable
+net MPG-ENCODER-COUNT       =>  axis.z.jog-counts   =>  joint.2.jog-counts
+
+setp    axis.a.jog-vel-mode 1
+net selected-jog-incr       =>  axis.a.jog-scale    =>  joint.3.jog-scale
+net axis-select-a           =>  axis.a.jog-enable   =>  joint.3.jog-enable
+net MPG-ENCODER-COUNT       =>  axis.a.jog-counts   =>  joint.3.jog-counts
+
+# JOG - INCREMENTAL MODE
+net jog-incr-a              =>  mux16.jogincr.sel0
+net jog-incr-b              =>  mux16.jogincr.sel1
+net jog-incr-c              =>  mux16.jogincr.sel2
+net jog-incr-d              =>  mux16.jogincr.sel3
+net selected-jog-incr       <=  mux16.jogincr.out-f
+setp mux16.jogincr.debounce-time      0.200000
+setp mux16.jogincr.use-graycode       false
+setp mux16.jogincr.suppress-no-input  false
+setp mux16.jogincr.in01         0.0001
+setp mux16.jogincr.in02         0.001
+setp mux16.jogincr.in04         0.010
+setp mux16.jogincr.in08         0.100
+
+# JOG CONTINUOUS - PANEL BUTTONS
+net axis-select-x           =>  halui.axis.x.select =>  halui.joint.0.select
+net axis-select-y           =>  halui.axis.y.select =>  halui.joint.1.select
+net axis-select-z           =>  halui.axis.z.select =>  halui.joint.2.select
+net axis-select-a           =>  halui.axis.a.select =>  halui.joint.3.select
+
+setp halui.axis.jog-speed       50
+setp halui.joint.jog-speed      50
+setp mux2.3.in0                 1                       #SCALE FOR LINEAR JOG
+setp mux2.3.in1                 36                      #SCALE FOR ANGULAR JOG
+net axis-select-a           =>  mux2.3.sel              #SCALE SELECTION TRIGGERED BY MPG SWITCH
+net JOG-SCALE-COMP          <=  mux2.3.out
+net JOG-SCALE-COMP          =>  scale.1.gain
+net JOG-SPEED-OUT           =>  scale.1.in
+net JOG-SCALED-OUT          <=  scale.1.out
+net JOG-SCALED-OUT          =>  halui.axis.jog-speed    =>  halui.joint.jog-speed
+net BTN-JOGNEG              =>  halui.axis.selected.minus   =>  halui.joint.selected.minus
+net BTN-JOGPOS              =>  halui.axis.selected.plus    =>  halui.joint.selected.plus
+
+# JOG CONTINUOUS - MPG SPEED ADJUST
+setp knob2float.0.max-out       100.0
+setp knob2float.0.min-out       0.0
+setp knob2float.0.scale         1
+net JOG-CONT-SELECT         =>  knob2float.0.enable
+net MPG-ENCODER-COUNT       =>  knob2float.0.counts
+net JOG-SPEED-OUT           <=  knob2float.0.out
+
+
+
+
+
